@@ -1,0 +1,23 @@
+{
+  "name": "zju-se-backend-patient",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yzhblind/ZJU-SE-backend-patient.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yzhblind/ZJU-SE-backend-patient/issues"
+  },
+  "homepage": "https://github.com/yzhblind/ZJU-SE-backend-patient#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.3.2"
+  }
+}
