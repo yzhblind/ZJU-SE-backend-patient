@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
 // mount routes to solve requests from front end 
-app.use(require('./routes'));
+app.use('/api/user', require('./routes'));
 
 // genearate 404 not found error and pass it to error handler
 app.use(function (req, res, next) {
