@@ -5,6 +5,11 @@ router.get('/email', function(req, res, next){
     res.send('TODO');
 });
 
+router.get('/name', function(req, res, next){
+    console.log('check name request incomes.');
+    res.send('TODO');
+});
+
 router.get('/phone', function(req, res, next){
     console.log('check phone request incomes.');
     res.send('TODO');
