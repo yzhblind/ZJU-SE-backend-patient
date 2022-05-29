@@ -1,6 +1,6 @@
-const m = require('mongoose');
+const mongoose = require('./db');
 
-const doctorSchema = m.Schema({
+const doctorSchema = mongoose.Schema({
     doctor_id: String,
     name: String,
     gender: String,
@@ -11,4 +11,4 @@ const doctorSchema = m.Schema({
     intro: String
 });
 
-module.exports = m.model('doctor', doctorSchema);
+module.exports = mongoose.model('doctor', doctorSchema);

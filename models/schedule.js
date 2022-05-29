@@ -1,10 +1,10 @@
-const m = require("mongoose");
+const mongoose = require("./db");
 
-const scheduleSchema = m.Schema({
+const scheduleSchema = mongoose.Schema({
     date: Date,
     time: String, // [morning, afternoon, evening]
     doctor_id: String,
     depart_id: String
 });
 
-module.exports = m.model("schedule", scheduleSchema);
+module.exports = mongoose.model("schedule", scheduleSchema);

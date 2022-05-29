@@ -1,12 +1,26 @@
-const mongoose = require('mongoose');
+const mongoose = require('./db');
 
 const patientSchema = mongoose.Schema({
-    user_id: String,
     gender: String,
-    name: String,
-    email: String,
-    phone: String,
-    password: String
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    phone: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    }
 });
 
-module.exports = mongoose.Model('patient', patientSchema);
+module.exports = mongoose.model('patient', patientSchema);

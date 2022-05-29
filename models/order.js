@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('./db');
 
 const orderSchema = mongoose.Schema({
     order_id: String,
@@ -8,4 +8,4 @@ const orderSchema = mongoose.Schema({
     status: String
 });
 
-module.exports = mongoose.Model('order', orderSchema);
+module.exports = mongoose.model('order', orderSchema);

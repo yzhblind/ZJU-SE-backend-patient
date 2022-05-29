@@ -10,7 +10,7 @@ var app = express();
 
 // use express.json middleware to parse the JSON in the request body
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 
 // mount routes to solve requests from front end 
 app.use('/api/user', require('./routes'));

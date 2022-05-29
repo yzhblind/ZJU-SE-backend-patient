@@ -1,5 +1,7 @@
 var router = require('express').Router();
 
+const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../../models');
+
 router.get('/email', function(req, res, next){
     console.log('check email request incomes.');
     res.send('TODO');

@@ -1,9 +1,9 @@
-const m = require('mongoose');
+const mongoose = require('./db');
 
-const deptSchema = m.Schema({
+const deptSchema = mongoose.Schema({
     dept_id: String,
     name: String,
     intro: String
 });
 
-module.exports = m.model('department', deptSchema);
+module.exports = mongoose.model('department', deptSchema);

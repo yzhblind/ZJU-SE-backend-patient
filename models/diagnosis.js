@@ -1,6 +1,6 @@
-const m = require("mongoose");
+const mongoose = require("./db");
 
-const diagnosisSchema = m.Schema({
+const diagnosisSchema = mongoose.Schema({
     diagnosis_id: String,
     patient_id: String,
     doctor_id: String,
@@ -10,4 +10,4 @@ const diagnosisSchema = m.Schema({
     medicine_message: String
 });
 
-module.exports = m.model("diagnosis", diagnosisSchema);
+module.exports = mongoose.model("diagnosis", diagnosisSchema);

@@ -1,4 +1,5 @@
 var router = require('express').Router();
+const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../../models');
 
 router.get('/info', function(req, res, next){
     console.log('registration info request incomes.');

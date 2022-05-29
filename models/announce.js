@@ -1,6 +1,6 @@
-const m = require("mongoose");
+const mongoose = require("./db");
 
-const announceSchema = m.Schema({
+const announceSchema = mongoose.Schema({
     announce_id: String,
     title: String,
     content: String,
@@ -8,4 +8,4 @@ const announceSchema = m.Schema({
     date: Date
 });
 
-module.exports = m.model("announce", announceSchema);
+module.exports = mongoose.model("announce", announceSchema);
