@@ -1,8 +1,13 @@
-var PORT = 8080
+const PORT = 8080
 
-var express = require('express'),
-    bodyParser = require('body-parser'),
-    mongoose = require('mongoose');
+const express = require('express')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+
+const passport = require('passport')
+const passportConf = require('./config/passport')
+
+passportConf(passport)
 
 var isProduction = process.env.NODE_ENV === 'production';
 

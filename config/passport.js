@@ -1,20 +1,21 @@
 var JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 var mongoose = require('mongoose')
-var User = mongoose.model('users')
+const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../models');
 var keys = require('./keys')
 
 var opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = keys.secretOrKey;
+opts.secretOrKey = keys.public_key;
+opts.algorithms = ['RS256']
 
 module.exports = (passport) => {
     passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
-        // jwt_payload contains the user infomation
-        User.findById(jwt_payload.id)
+        // jwt_payload 中含有用户的ID信息
+        patient.findById(jwt_payload.id)
             .then(user => {
                 if (user) {
-                    // here we write the user information into req.user
+                    // 将用户信息写入到req.user
                     return done(null, user)
                 }
                 return done(null, false)

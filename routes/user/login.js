@@ -1,9 +1,55 @@
-var router = require('express').Router();
+const router = require('express').Router();
+const jsonwebtoken = require('jsonwebtoken');
+const key = require('../../config/keys');
 const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../../models');
+
+function issueJWT(id) {
+    const expiresIn = '1d'
+    const payload = {
+        id : id,
+        iat: Date.now()
+    }
+    const signedToken = jsonwebtoken.sign(payload, key.private_key, { expiresIn: expiresIn, algorithm: 'RS256' });
+    return {
+        token: "Bearer " + signedToken,
+        expiresIn: expiresIn
+    }
+}
 
 router.post('/pwd', function(req, res, next){
     console.log('login passward request incomes.');
-    res.send('TODO');
+    patient.findOne({name:req.body.username}).then((user)=>{
+        if(!user) {
+            return res.status(401).json({
+                status: 'fail',
+                err: {
+                    errcode:104,
+                    msg: '用户不存在'
+                }
+            })
+        }
+
+        if(user.password==req.body.password) {
+            const tokenObj = issueJWT(user._id)
+            res.status(200).json({
+                status: 'success',
+                data: {
+                    msg: '登录成功',
+                    user_id : user._id,
+                    token: tokenObj.token,
+                    expiresIn: tokenObj.expiresIn
+                }
+            })
+        } else {
+            res.status(401).json({
+                status: 'fail',
+                err: {
+                    errcode:105,
+                    msg: '密码错误'
+                }
+            })
+        }
+    }).catch(next)
 });
 
 router.post('/idcode', function(req, res, next){
