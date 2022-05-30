@@ -34,11 +34,11 @@ router.post('/', async function (req, res, next) {
                 }
             })
         }
-        if(await check.phone(phone)!=null) {
+        if(await check.email(email)!=null) {
             return res.json({
                 errcode:102,
                 err:{
-                    msg:'手机号不唯一'
+                    msg:'邮箱不唯一'
                 }
             })
         }
