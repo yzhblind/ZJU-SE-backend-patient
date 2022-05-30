@@ -1,6 +1,6 @@
 var router = require('express').Router();
 const passport = require('passport')
-const { announce, department, diagnosis, doctor, order, patient, schedule, order } = require('../../models');
+const { announce, department, diagnosis, doctor, order, patient, schedule } = require('../../models');
 
 router.get('/query', passport.authenticate('jwt', { session: false }), function (req, res, next) {
     console.log('order query request incomes.');
@@ -12,7 +12,7 @@ router.post('/delete', passport.authenticate('jwt', { session: false }), functio
 
 });
 
-router.get('/info', passport.authenticate('jwt', { session: false }), function (req, res, next) {
+router.get('/info', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     console.log('order info request incomes.');
     try {
         const ord = await order.findById(req.query.order_id).exec()
@@ -55,9 +55,47 @@ router.get('/info', passport.authenticate('jwt', { session: false }), function (
     }
 });
 
-router.post('/comment', passport.authenticate('jwt', { session: false }), function (req, res, next) {
+router.post('/comment', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     console.log('order comment request incomes.');
-
+    try {
+        const ord = await order.findById(req.body.order_id).exec()
+        if (ord == null) {
+            return res.json({
+                status: 'fail',
+                err: {
+                    errcode: 107,
+                    msg: '订单不存在'
+                }
+            })
+        }
+        if (req.user.id == ord.user_id) {
+            order.updateOne({ _id: req.body.order_id }, {
+                $push: {
+                    comments: {
+                        body: req.body.content,
+                        date: Date.now()
+                    }
+                }
+            }).then(() => {
+                res.json({
+                    status: 'success',
+                    data: {
+                        msg: '评论成功'
+                    }
+                })
+            }).catch(next)
+        } else {
+            res.status(401).json({
+                status: 'fail',
+                err: {
+                    errcode: 106,
+                    msg: 'token与请求用户不匹配'
+                }
+            })
+        }
+    } catch (err) {
+        next(err)
+    }
 });
 
 module.exports = router;
