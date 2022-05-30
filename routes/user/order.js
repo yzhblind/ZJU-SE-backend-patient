@@ -7,9 +7,49 @@ router.get('/query', passport.authenticate('jwt', { session: false }), function 
 
 });
 
-router.post('/delete', passport.authenticate('jwt', { session: false }), function (req, res, next) {
+router.post('/delete', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     console.log('order delete request incomes.');
-
+    try {
+        const ord = await order.findById(req.body.order_id).exec()
+        if (ord == null) {
+            return res.json({
+                status: 'fail',
+                err: {
+                    errcode: 107,
+                    msg: '订单不存在'
+                }
+            })
+        }
+        if (req.user.id == ord.user_id) {
+            if (ord.status in ['TRADE_SUCCESS', 'WAIT_BUYER_PAY']) {
+                await order.findByIdAndDelete(req.body.order_id).exec()
+                res.json({
+                    status: 'success',
+                    data: {
+                        msg: '订单删除成功'
+                    }
+                })
+            } else {
+                return res.json({
+                    status: 'fail',
+                    err: {
+                        errcode: 108,
+                        msg: '订单状态不支持删除'
+                    }
+                })
+            }
+        } else {
+            res.status(401).json({
+                status: 'fail',
+                err: {
+                    errcode: 106,
+                    msg: 'token与请求用户不匹配'
+                }
+            })
+        }
+    } catch (err) {
+        next(err)
+    }
 });
 
 router.get('/info', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
