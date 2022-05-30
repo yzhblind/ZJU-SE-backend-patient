@@ -12,32 +12,36 @@ router.post('/', async function (req, res, next) {
         const gender = req.body.gender
         if(password === undefined || password.length < 8) {
             return res.json({
-                errcode:101,
+                status: 'fail',
                 err:{
+                    errcode:101,
                     msg:'密码长度不足8'
                 }
             })
         }
         if(await check.name(name)!=null) {
             return res.json({
-                errcode:102,
+                status: 'fail',
                 err:{
+                    errcode:102,
                     msg:'用户名不唯一'
                 }
             })
         }
         if(await check.phone(phone)!=null) {
             return res.json({
-                errcode:102,
+                status: 'fail',
                 err:{
+                    errcode:102,
                     msg:'手机号不唯一'
                 }
             })
         }
         if(await check.email(email)!=null) {
             return res.json({
-                errcode:102,
+                status: 'fail',
                 err:{
+                    errcode:102,
                     msg:'邮箱不唯一'
                 }
             })
@@ -50,6 +54,12 @@ router.post('/', async function (req, res, next) {
             gender: gender
         });
         p.save().then(() => console.log('register info saved')).catch(next)
+        res.json({
+            status: 'success',
+            data: {
+                msg: '注册成功'
+            }
+        })
     } catch (err) {
         next(err)
     }
