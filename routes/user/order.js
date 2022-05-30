@@ -1,4 +1,5 @@
 var router = require('express').Router();
+const passport = require('passport')
 const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../../models');
 
 router.get('/query', function(req, res, next){
@@ -6,24 +7,19 @@ router.get('/query', function(req, res, next){
     res.send('TODO');
 });
 
-router.get('/info', function(req, res, next){
+router.post('/delete', function(req, res, next){
+    console.log('order delete request incomes.');
+    res.send('TODO');
+});
+
+router.get('/info', passport.authenticate('jwt', { session: false }), function(req, res, next){
     console.log('order info request incomes.');
-    res.send('TODO');
+    
 });
 
-router.post('/create', function(req, res, next){
-    console.log('order create request incomes.');
-    res.send('TODO');
-});
-
-router.post('/revoke', function(req, res, next){
-    console.log('order revoke request incomes.');
-    res.send('TODO');
-});
-
-router.post('/comment', function(req, res, next){
+router.post('/comment', passport.authenticate('jwt', { session: false }), function(req, res, next){
     console.log('order comment request incomes.');
-    res.send('TODO');
+    
 });
 
 module.exports = router;

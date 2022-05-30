@@ -1,7 +1,6 @@
 const mongoose = require('./db');
 
 const doctorSchema = mongoose.Schema({
-    doctor_id: String,
     name: String,
     gender: String,
     age: Number,

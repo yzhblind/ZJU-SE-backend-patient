@@ -1,7 +1,6 @@
 const mongoose = require("./db");
 
 const announceSchema = mongoose.Schema({
-    announce_id: String,
     title: String,
     content: String,
     announcer: String,
