@@ -5,14 +5,29 @@ const check = require('../../tools/check')
 
 router.get('/email', async function (req, res, next) {
     console.log('check email request incomes.');
-    res.send('TODO');
+    try{
+        const email = req.query.email
+        res.json({
+            status:'success',
+            data:{
+                isExist: await check.email(email) != null
+            }
+        })
+    } catch(err) {
+        next(err)
+    }
 });
 
 router.get('/name', async function (req, res, next) {
     console.log('check name request incomes.');
     try{
         const name = req.query.username
-        
+        res.json({
+            status:'success',
+            data:{
+                isExist: await check.name(name) != null
+            }
+        })
     } catch(err) {
         next(err)
     }
@@ -21,7 +36,13 @@ router.get('/name', async function (req, res, next) {
 router.get('/phone', async function (req, res, next) {
     console.log('check phone request incomes.');
     try{
-
+        const phone = req.query.phone
+        res.json({
+            status:'success',
+            data:{
+                isExist: await check.phone(phone) != null
+            }
+        })
     } catch(err) {
         next(err)
     }
