@@ -29,7 +29,7 @@ async function orderInsertCheck(user_id, doctor_id, time) {
         } else {
             let u = await patient.findById(user_id).exec();
             let d = await doctor.findById(doctor_id).exec();
-            if (u.length == 0) {
+            if (u == null) {
                 return {
                     status: 'fail',
                     err: {
@@ -37,7 +37,7 @@ async function orderInsertCheck(user_id, doctor_id, time) {
                         msg: '订单患者不存在'
                     }
                 };
-            } else if (d.length == 0) {
+            } else if (d == null) {
                 return {
                     status: 'fail',
                     err: {
