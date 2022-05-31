@@ -13,6 +13,15 @@ function cvtTime(time_name) {
     return table[time_name];
 }
 
+function cvtTimeToIdx(time_name) {
+    table = {
+        'morning': 0,
+        'afternoon': 1,
+        'evening': 2
+    }
+    return table[time_name];
+}
+
 async function cvtScheduleToHumanInfo(schedule_data) {
     ret = [];
     tree = {};
@@ -58,4 +67,4 @@ async function cvtScheduleToHumanInfo(schedule_data) {
     return [ret, ret_tree];
 }
 
-module.exports = {cvtDate, cvtTime, cvtScheduleToHumanInfo};
+module.exports = {cvtDate, cvtTime, cvtScheduleToHumanInfo, cvtTimeToIdx};

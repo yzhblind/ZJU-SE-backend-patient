@@ -1,6 +1,7 @@
 var router = require('express').Router();
+const { default: mongoose } = require('mongoose');
 const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../../models');
-const { cvtScheduleToHumanInfo } = require('../../tools/schedule')
+const { cvtScheduleToHumanInfo, cvtTimeToIdx } = require('../../tools/schedule')
 
 router.get('/info', async function(req, res, next){
     console.log('registration info request incomes.');
@@ -30,9 +31,23 @@ router.get('/info', async function(req, res, next){
     })
 });
 
-router.get('/select', function(req, res, next){
+router.get('/select', async function(req, res, next){
     console.log('registration select request incomes.');
-    res.send('TODO');
+    doctor_id_query = req.query.doctorId;
+    date_idx = req.query.date;
+    schs = await schedule.find({doctor_id: mongoose.Types.ObjectId(doctor_id_query), date:date_idx}).lean().exec();
+    console.log(schs)
+    quotas = [0, 0, 0]
+    for(let i = 0; i < schs.length; i++) {
+        quotas[cvtTimeToIdx(schs[i].time)] = schs[i].quota;
+    }
+    console.log(quotas);
+    res.json({
+        status: 'success',
+        data: {
+            'numberOfQueue': quotas
+        }
+    });
 });
 
 router.get('/pay', function(req, res, next){
