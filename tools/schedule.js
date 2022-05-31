@@ -22,6 +22,15 @@ function cvtTimeToIdx(time_name) {
     return table[time_name];
 }
 
+function cvtIdxToChiTime(time_idx) {
+    table = {
+        0: '上午',
+        1: '下午',
+        2: '晚上'
+    }
+    return table[time_idx];
+}
+
 async function cvtScheduleToHumanInfo(schedule_data) {
     ret = [];
     tree = {};
@@ -67,4 +76,5 @@ async function cvtScheduleToHumanInfo(schedule_data) {
     return [ret, ret_tree];
 }
 
-module.exports = {cvtDate, cvtTime, cvtScheduleToHumanInfo, cvtTimeToIdx};
+module.exports = {cvtDate, cvtTime, cvtScheduleToHumanInfo, cvtTimeToIdx, cvtIdxToChiTime
+};
