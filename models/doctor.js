@@ -4,7 +4,7 @@ const doctorSchema = mongoose.Schema({
     name: String,
     gender: String,
     age: Number,
-    dept_id: String,
+    dept_id: mongoose.Schema.Types.ObjectId,
     position: String,
     password: String,
     intro: String
