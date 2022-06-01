@@ -18,14 +18,14 @@ router.get('/query', async function(req, res, next) {
                 }
             })
         } else {
-            query['user_id'] = req.query.user_id;
+            query['user_id'] = mongoose.Types.ObjectId(req.query.user_id);
         }
 
         if (req.query.order_id != null) {
             query['_id'] = mongoose.Types.ObjectId(req.query.order_id);
         }
         if (req.query.status != null) {
-            query['status'] = req.query.status
+            query['status'] = req.query.status;
         };
         if (req.query.start_date != null) {
             let start = new Date(req.query.start_date);
@@ -213,7 +213,4 @@ router.post('/comment', passport.authenticate('jwt', { session: false }), async 
 });
 
 
-
-
-module.exports = router;
 module.exports = router;

@@ -70,18 +70,44 @@ router.get('/pay', async function(req, res, next) {
         }
 
         if (ord.status == 'WAIT_BUYER_PAY') {
-            order.updateOne({ _id: mongoose.Types.ObjectId(req.query.order_id) }, {
-                status: 'TRADE_SUCCESS'
-            }).then(() => {
-                res.json({
-                    status: 'success',
-                    pay: 'pay_success',
-                    data: {
-                        msg: '支付成功'
-                    }
-                })
-            }).catch(next)
-        };
+            let curTime = new Date().getTime();
+            let orderTime = ord.time.getTime();
+            let timeInterval = 1000 * 3600 * 24;
+            if (curTime - orderTime < timeInterval) {
+                order.updateOne({ _id: mongoose.Types.ObjectId(req.query.order_id) }, {
+                    status: 'TRADE_SUCCESS'
+                }).then(() => {
+                    res.json({
+                        status: 'success',
+                        pay: 'pay_success',
+                        data: {
+                            msg: '支付成功'
+                        }
+                    })
+                }).catch(next)
+            } else {
+                order.updateOne({ _id: mongoose.Types.ObjectId(req.query.order_id) }, {
+                    status: 'TRADE_CLOSED'
+                }).then(() => {
+                    res.json({
+                        status: 'fail',
+                        pay: 'pay_fail',
+                        data: {
+                            msg: '支付超时'
+                        }
+                    })
+                }).catch(next)
+            }
+
+        } else {
+            res.json({
+                status: 'fail',
+                pay: 'pay_fail',
+                data: {
+                    msg: '该订单不处于可支付状态'
+                }
+            })
+        }
 
     } catch (error) {
         next(error);
@@ -99,9 +125,10 @@ router.post('/form', async function(req, res, next) {
             res.json(checkResponse);
         } else {
             console.log('pass');
-            var current = new Date();
+            var curTime = new Date();
 
-            current.setHours(time);
+            // current.setHours(time); don't need to set hours ?????
+
             // const p =
             //     new order({
             //         user_id: mongoose.Types.ObjectId(user_id),
@@ -116,7 +143,7 @@ router.post('/form', async function(req, res, next) {
             order.collection.insertOne({
                 user_id: mongoose.Types.ObjectId(user_id),
                 doctor_id: mongoose.Types.ObjectId(doctor_id),
-                time: current,
+                time: curTime,
                 status: 'WAIT_BUYER_PAY',
                 comments: { body: 'nothing to say', date: current }
             }).then(
