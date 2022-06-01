@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 // db.createUser({user:"userServer", pwd:"userServer", roles:[{role:"readWrite",db:"data"}]})
 
 // 注意修改端口与启动的数据库保持一致
-const url = 'mongodb://userServer:userServer@localhost:49153';
+// const url = 'mongodb://userServer:userServer@localhost:49153';
+const url = 'mongodb://userServer:userServer@yzhblind.top:27017';
+
 const db  = 'data';
 
 mongoose.connect(`${url}/${db}`, {useNewUrlParser: true, useUnifiedTopology: true});

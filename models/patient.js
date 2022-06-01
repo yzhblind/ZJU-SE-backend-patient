@@ -20,7 +20,8 @@ const patientSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    collect: [{doctor_id:String}]
 });
 
 module.exports = mongoose.model('patient', patientSchema);
