@@ -4,6 +4,7 @@ const announceSchema = mongoose.Schema({
     title: String,
     content: String,
     announcer: String,
+    user_id: mongoose.Schema.Types.ObjectId,
     date: Date
 });
 
