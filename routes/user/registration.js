@@ -117,17 +117,18 @@ router.get('/pay', async function(req, res, next) {
 router.post('/form', async function(req, res, next) {
     console.log('registration form request incomes.');
     try {
-        const user_id = req.query.user_id;
-        const doctor_id = req.query.doctor_id;
-        const time = parseInt(req.query.time);
+        const user_id = req.body.user_id;
+        const doctor_id = req.body.doctor_id;
+        const time = parseInt(req.body.time);
         checkResponse = await orderInsertCheck(user_id, doctor_id, time);
         if (checkResponse['status'] == 'fail') {
             res.json(checkResponse);
         } else {
             console.log('pass');
             var curTime = new Date();
+            var deadTime = new Date();
 
-            // current.setHours(time); don't need to set hours ?????
+            // curTime.setHours(time); don't need to set hours ?????
 
             // const p =
             //     new order({
@@ -140,17 +141,27 @@ router.post('/form', async function(req, res, next) {
 
             // p.save().then(() => console.log('register info saved')).catch(next);
             let _id;
-            order.collection.insertOne({
+            await order.collection.insertOne({
                 user_id: mongoose.Types.ObjectId(user_id),
                 doctor_id: mongoose.Types.ObjectId(doctor_id),
                 time: curTime,
                 status: 'WAIT_BUYER_PAY',
-                comments: { body: 'nothing to say', date: current }
+                comments: { body: 'nothing to say', date: curTime }
             }).then(
                 result => {
-                    _id = result.insertedId;
+                    _id = result['insertedId'];
+                    // console.log(_id);
                 }
             ).catch(next);
+
+            deadTime.setDate(curTime.getDate() + 1);
+            announce.collection.insertOne({
+                title: '订单生成通知',
+                content: '请在'.concat(deadTime.toISOString().substring(0, 16)).concat('前及时支付订单: ').concat(_id),
+                announcer: '系统自动生成',
+                user_id: mongoose.Types.ObjectId(user_id),
+                date: curTime
+            }).catch(next);
 
             res.json({
                 status: 'success',

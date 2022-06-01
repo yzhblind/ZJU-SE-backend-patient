@@ -50,8 +50,10 @@ router.get('/query', async function(req, res, next) {
         }
 
 
-        console.log(query);
-        orders = await order.find(query).exec();
+        // console.log(query);
+        orders = await order.find(query).sort({
+            time: -1
+        }).exec();
         let ret = [];
         for (let i = 0; i < orders.length; i++) {
             let ord = orders[i];
