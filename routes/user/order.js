@@ -103,7 +103,7 @@ router.get('/query', async function(req, res, next) {
 router.post('/delete', passport.authenticate('jwt', { session: false }), async function(req, res, next) {
     console.log('order delete request incomes.');
     try {
-        const ord = await order.findById(req.body.order_id).exec()
+        const ord = await order.findById(req.body.params.order_id).exec()
         if (ord == null) {
             return res.json({
                 status: 'fail',
@@ -115,7 +115,7 @@ router.post('/delete', passport.authenticate('jwt', { session: false }), async f
         }
         if (req.user.id == ord.user_id) {
             if (ord.status in ['TRADE_SUCCESS', 'WAIT_BUYER_PAY']) {
-                await order.findByIdAndDelete(req.body.order_id).exec()
+                await order.findByIdAndDelete(req.body.params.order_id).exec()
                 res.json({
                     status: 'success',
                     data: {
@@ -192,7 +192,7 @@ router.get('/info', passport.authenticate('jwt', { session: false }), async func
 router.post('/comment', passport.authenticate('jwt', { session: false }), async function(req, res, next) {
     console.log('order comment request incomes.');
     try {
-        const ord = await order.findById(req.body.order_id).exec()
+        const ord = await order.findById(req.body.params.order_id).exec()
         if (ord == null) {
             return res.json({
                 status: 'fail',
@@ -203,10 +203,10 @@ router.post('/comment', passport.authenticate('jwt', { session: false }), async 
             })
         }
         if (req.user.id == ord.user_id) {
-            order.updateOne({ _id: req.body.order_id }, {
+            order.updateOne({ _id: req.body.params.order_id }, {
                 $push: {
                     comments: {
-                        body: req.body.content,
+                        body: req.body.params.content,
                         date: Date.now()
                     }
                 }

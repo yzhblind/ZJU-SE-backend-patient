@@ -5,11 +5,11 @@ const check = require('../../tools/check')
 router.post('/', async function (req, res, next) {
     try {
         console.log('register request incomes.')
-        const name = req.body.username
-        const phone = req.body.phone
-        const password = req.body.password
-        const email = req.body.email
-        const gender = req.body.gender
+        const name = req.body.params.username
+        const phone = req.body.params.phone
+        const password = req.body.params.password
+        const email = req.body.params.email
+        const gender = req.body.params.gender
         if(password === undefined || password.length < 8) {
             return res.json({
                 status: 'fail',

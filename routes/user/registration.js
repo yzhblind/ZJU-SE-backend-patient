@@ -117,9 +117,9 @@ router.get('/pay', async function(req, res, next) {
 router.post('/form', async function(req, res, next) {
     console.log('registration form request incomes.');
     try {
-        const user_id = req.body.user_id;
-        const doctor_id = req.body.doctor_id;
-        const time = parseInt(req.body.time);
+        const user_id = req.body.params.user_id;
+        const doctor_id = req.body.params.doctor_id;
+        const time = parseInt(req.body.params.time);
         checkResponse = await orderInsertCheck(user_id, doctor_id, time);
         if (checkResponse['status'] == 'fail') {
             res.json(checkResponse);
