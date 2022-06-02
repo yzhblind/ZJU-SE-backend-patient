@@ -1,15 +1,15 @@
 var router = require('express').Router();
 const passport = require('passport')
-const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../../models');
+const { announce, department, diagnosis, doctor, order, patient, schedule } = require('../../models');
 
-router.get('/tips', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.get('/tips', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     console.log('health tips request incomes.');
     if (req.user.id == req.query.user_id) {
         res.json({
             status: 'success',
-            data:{
+            data: {
                 tips: '一天一个苹果，医生远离我' // 草（x
-            }    
+            }
         })
     } else {
         res.status(401).json({
