@@ -14,7 +14,12 @@ router.get('/query', async function(req, res, next) {
         })
     } else {
         ret = [];
-        let ann = await announce.find({ user_id: req.query.user_id }).sort({ 'date': -1 }).exec();
+        let orderAfterTime = new Date();
+        orderAfterTime.setMonth(new Date().getMonth() - 1);
+        let ann = await announce.find({
+            user_id: req.query.user_id,
+            date: { $gte: orderAfterTime }
+        }).sort({ 'date': -1 }).exec();
         for (let i = 0; i < ann.length; i++) {
             ret.push({
                 'title': ann[i].title,
