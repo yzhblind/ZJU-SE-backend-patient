@@ -36,6 +36,7 @@ router.post('/pwd', function(req, res, next){
                 data: {
                     msg: '登录成功',
                     user_id : user._id,
+                    username : req.body.params.username,
                     token: tokenObj.token,
                     expiresIn: tokenObj.expiresIn
                 }
@@ -72,6 +73,7 @@ router.post('/idcode', function(req, res, next){
                 data: {
                     msg: '登录成功',
                     user_id : user._id,
+                    username : user.name,
                     token: tokenObj.token,
                     expiresIn: tokenObj.expiresIn
                 }
