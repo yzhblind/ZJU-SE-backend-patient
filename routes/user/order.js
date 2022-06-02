@@ -4,7 +4,7 @@ const passport = require('passport')
 const { announce, department, diagnosis, doctor, order, patient, schedule } = require('../../models');
 
 const { default: mongoose } = require('mongoose');
-const { doctorIdFromName } = require('../../tools/order');
+const { doctorIdFromName, orderStatusCheck, validQuery } = require('../../tools/order');
 router.get('/query', async function(req, res, next) {
     console.log('order query request incomes.');
     try {
@@ -21,21 +21,21 @@ router.get('/query', async function(req, res, next) {
             query['user_id'] = mongoose.Types.ObjectId(req.query.user_id);
         }
 
-        if (req.query.order_id != null) {
+        if (validQuery(req.query.order_id)) {
             query['_id'] = mongoose.Types.ObjectId(req.query.order_id);
         }
-        if (req.query.status != null) {
+        if (validQuery(req.query.status)) {
             query['status'] = req.query.status;
         };
-        if (req.query.start_date != null) {
-            let start = new Date(req.query.start_date);
+        if (validQuery(req.query.start_time)) {
+            let start = new Date(req.query.start_time);
             if (query['time'] == undefined) {
                 query['time'] = { $gte: start };
             } else {
                 query['time']['$gte'] = start;
             }
         };
-        if (req.query.end_time != null) {
+        if (validQuery(req.query.end_time)) {
             let end = new Date(req.query.end_time);
             if (query['time'] == undefined) {
                 query['time'] = { $lte: end };
@@ -44,30 +44,48 @@ router.get('/query', async function(req, res, next) {
             }
         }
 
-        if (req.query.department != null || req.query.doctor_name != null) {
+        if (validQuery(req.query.doctor_name) || validQuery(req.query.department)) {
             doctor_ids = await doctorIdFromName(req.query.doctor_name, req.query.department);
             query['doctor_id'] = { $in: doctor_ids };
         }
 
 
         // console.log(query);
-        orders = await order.find(query).sort({
-            time: -1
-        }).exec();
+        orderStatusCheck();
+        orders = await order.aggregate([{
+            $lookup: {
+                from: 'doctors',
+                localField: 'doctor_id',
+                foreignField: '_id',
+                as: 'doctor_info'
+            }
+        }, {
+            $lookup: {
+                from: 'patients',
+                localField: 'user_id',
+                foreignField: '_id',
+                as: 'user_info'
+            }
+        }, {
+            $match: query
+        }, {
+            $sort: { time: -1 }
+        }]);
+
+        // orders = await order.find(query).sort({
+        //     time: -1
+        // }).exec();
+
         let ret = [];
         for (let i = 0; i < orders.length; i++) {
-            let ord = orders[i];
-            doc = await doctor.findById(ord.doctor_id).exec();
-            user = await patient.findById(ord.user_id).exec();
             ret.push({
-                order_id: ord._id,
-                user_id: ord.user_id,
-                doctor_id: ord.doctor_id,
-                user_name: user.name,
-                doctor_name: doc.name,
-                time: ord.time,
-                status: ord.status,
-                comments: ord.comments[0].body
+                order_id: orders[i]._id,
+                user_id: orders[i].user_id,
+                doctor_id: orders[i].doctor_id,
+                user_name: orders[i].user_info[0].name,
+                doctor_name: orders[i].doctor_info[0].name,
+                time: orders[i].time,
+                status: orders[i].status
             });
         }
 
@@ -154,7 +172,7 @@ router.get('/info', passport.authenticate('jwt', { session: false }), async func
                     doctor_name: doc.name,
                     time: ord.time,
                     status: ord.status,
-                    comments: ord.comments[0].body
+                    comments: ord.comments
                 }
             })
         } else {

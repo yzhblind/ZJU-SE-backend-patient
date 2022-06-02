@@ -72,7 +72,7 @@ router.get('/pay', async function(req, res, next) {
         if (ord.status == 'WAIT_BUYER_PAY') {
             let curTime = new Date().getTime();
             let orderTime = ord.time.getTime();
-            let timeInterval = 1000 * 3600 * 24;
+            let timeInterval = 1000 * 60 * 15; // 15 min
             if (curTime - orderTime < timeInterval) {
                 order.updateOne({ _id: mongoose.Types.ObjectId(req.query.order_id) }, {
                     status: 'TRADE_SUCCESS'
@@ -157,7 +157,8 @@ router.post('/form', async function(req, res, next) {
             deadTime.setDate(curTime.getDate() + 1);
             announce.collection.insertOne({
                 title: '订单生成通知',
-                content: '请在'.concat(deadTime.toISOString().substring(0, 16)).concat('前及时支付订单: ').concat(_id),
+                // content: '请在'.concat(deadTime.toISOString().substring(0, 16)).concat('前及时支付订单: ').concat(_id),
+                content: '请在15分钟内支付订单: '.concat(_id),
                 announcer: '系统自动生成',
                 user_id: mongoose.Types.ObjectId(user_id),
                 date: curTime
