@@ -47,21 +47,13 @@ function mergeSchedules(schedule_data, dept_name) {
         sch = schedule_data[i];
         if(ret_schedule[sch.date] === undefined) {
             ret_schedule[sch.date] = {
-                [dept_name]: {
-                    [sch.time]: [sch.name]
-                }
+                [sch.time]: [sch.name]
             }
         } else {
-            if(ret_schedule[sch.date][dept_name] === undefined) {
-                ret_schedule[sch.date][dept_name] = {
-                    [sch.time]: [sch.name]
-                }
+            if(ret_schedule[sch.date][sch.time] === undefined) {
+                ret_schedule[sch.date][sch.time] = [sch.name];
             } else {
-                if(ret_schedule[sch.date][dept_name][sch.time] === undefined) {
-                    ret_schedule[sch.date][dept_name][sch.time] = [sch.name];
-                } else {
-                    ret_schedule[sch.date][dept_name][sch.time].push(sch.name);
-                }
+                ret_schedule[sch.date][sch.time].push(sch.name);
             }
         }
     }
