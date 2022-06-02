@@ -4,8 +4,8 @@ const { cvtDate, cvtTime } = require('../../tools/schedule');
 
 router.post('/query', async function(req, res, next){
     console.log('schedule query request incomes.');
-    days = req.body.weekdays;
-    departs = req.body.department;
+    days = req.body.params.weekdays;
+    departs = req.body.params.department;
     sch_doc_dept = await schedule.aggregate([
         {
             $lookup: {

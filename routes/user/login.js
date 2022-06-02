@@ -18,7 +18,7 @@ function issueJWT(id) {
 
 router.post('/pwd', function(req, res, next){
     console.log('login passward request incomes.');
-    patient.findOne({name:req.body.username}).then((user)=>{
+    patient.findOne({name:req.body.params.username}).then((user)=>{
         if(!user) {
             return res.status(401).json({
                 status: 'fail',
@@ -29,7 +29,7 @@ router.post('/pwd', function(req, res, next){
             })
         }
 
-        if(user.password==req.body.password) {
+        if(user.password==req.body.params.password) {
             const tokenObj = issueJWT(user._id)
             res.status(200).json({
                 status: 'success',
@@ -54,7 +54,7 @@ router.post('/pwd', function(req, res, next){
 
 router.post('/idcode', function(req, res, next){
     console.log('login identifying code request incomes.');
-    patient.findOne({phone:req.body.phone}).then((user)=>{
+    patient.findOne({phone:req.body.params.phone}).then((user)=>{
         if(!user) {
             return res.status(401).json({
                 status: 'fail',
@@ -65,7 +65,7 @@ router.post('/idcode', function(req, res, next){
             })
         }
 
-        if('123456'==req.body.idcode) {
+        if('123456'==req.body.params.idcode) {
             const tokenObj = issueJWT(user._id)
             res.status(200).json({
                 status: 'success',
