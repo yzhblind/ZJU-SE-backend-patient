@@ -20,7 +20,22 @@ const patientSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    collect: [{doctor_id:String}]
+    gender:{
+        type:String,
+    },
+    age:{
+        type:String
+    },
+    hereditary:{
+        type:String
+    },
+    pastill:{
+        type:String
+    },
+    collect: [{doctor_id:String}],
+    pic_id:{
+        type:String
+    }
 });
 
 module.exports = mongoose.model('patient', patientSchema);

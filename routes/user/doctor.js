@@ -30,29 +30,53 @@ router.get('/query', async function(req, res, next){
     })
 });
 
-router.post('/addcollect', function(req, res, next){
-    console.log('doctor addcollect request incomes.');
-    patient.findByIdAndUpdate(
-        req.body.user_id,
-        {$push:{collects:req.body.doctor_id}},
-        null,
-        (err)=>{
-            if (err) {
-                console.log('user collect update error:', err)
-            } else {
-                console.log('user collect update success')
-            }
-    }).catch(next)
-});
+router.post('/addcollect',async function(req, res, next){
+    console.log('doctor addcollect request incomes.')
 
-router.get('/collectlist', function(req, res, next){
-    console.log('doctor collectlist request incomes.');
-    try {
-        const user = await patient.findById(req.user.id).exec()
+    try{
+        const p=await patient.findByIdAndUpdate(
+            req.body.user_id,
+            {"$addToSet":{"collect":{doctor_id:req.body.doctor_id}}},
+            {"upsert":true}
+        ).exec()
+
+        if(p==null){
+            return res.json({
+                status: 'fail',
+                data: {
+                    msg: 'uid not exist'
+                }
+            })
+        }
         res.json({
             status: 'success',
+            data: {
+                msg: '加入收藏成功'
+            }
+        })
+    }
+    catch(error){
+        next(error)
+    }
+
+});
+
+router.get('/collectlist', async function(req, res, next){
+    console.log('doctor collectlist request incomes.');
+    try {
+        const user = await patient.findById(req.query.user_id).exec()
+        if(user==null){
+            return res.json({
+                status: 'fail',
+                data:{
+                    msg:'患者不存在'
+                }    
+            })
+        }
+        return res.json({
+            status: 'success',
             data:{
-                collects:user.collects
+                collects:user.collect
             }    
         })
     } catch(err) {
