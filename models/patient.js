@@ -32,6 +32,12 @@ const patientSchema = mongoose.Schema({
     pastill:{
         type:String
     },
+    height:{
+        type:String
+    },
+    weight:{
+        type:String
+    },
     collect: [{doctor_id:String}],
     pic_id:{
         type:String
