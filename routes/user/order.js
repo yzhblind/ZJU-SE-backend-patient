@@ -114,7 +114,7 @@ router.post('/delete', passport.authenticate('jwt', { session: false }), async f
             })
         }
         if (req.user.id == ord.user_id) {
-            if (ord.status in ['TRADE_SUCCESS', 'WAIT_BUYER_PAY']) {
+            if (ord.status==="WAIT_BUYER_PAY" || ord.status.status=="TRADE_CLOSED") {
                 await order.findByIdAndDelete(req.body.params.order_id).exec()
                 res.json({
                     status: 'success',

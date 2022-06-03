@@ -30,4 +30,58 @@ router.get('/query', async function(req, res, next){
     })
 });
 
+router.post('/addcollect',async function(req, res, next){
+    console.log('doctor addcollect request incomes.')
+
+    try{
+        const p=await patient.findByIdAndUpdate(
+            req.body.params.user_id,
+            {"$addToSet":{"collect":{doctor_id:req.body.params.doctor_id}}},
+            {"upsert":true}
+        ).exec()
+
+        if(p==null){
+            return res.json({
+                status: 'fail',
+                data: {
+                    msg: 'uid not exist'
+                }
+            })
+        }
+        res.json({
+            status: 'success',
+            data: {
+                msg: '加入收藏成功'
+            }
+        })
+    }
+    catch(error){
+        next(error)
+    }
+
+});
+
+router.get('/collectlist', async function(req, res, next){
+    console.log('doctor collectlist request incomes.');
+    try {
+        const user = await patient.findById(req.query.user_id).exec()
+        if(user==null){
+            return res.json({
+                status: 'fail',
+                data:{
+                    msg:'患者不存在'
+                }    
+            })
+        }
+        return res.json({
+            status: 'success',
+            data:{
+                collects:user.collect
+            }    
+        })
+    } catch(err) {
+        next(err)
+    }
+});
+
 module.exports = router;
