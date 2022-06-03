@@ -84,7 +84,6 @@ router.get('/query', async function(req, res, next) {
         //     time: -1
         // }).exec();
 
-        console.log(orders[0].doctor_info[0])
 
         let ret = [];
         for (let i = 0; i < orders.length; i++) {
@@ -197,8 +196,6 @@ router.get('/info', passport.authenticate('jwt', { session: false }), async func
         }
     } catch (err) {
         next(err)
-        tatus: 'fail',
-            e
     }
 });
 
