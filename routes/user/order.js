@@ -94,7 +94,7 @@ router.get('/query', async function(req, res, next) {
                 doctor_id: orders[i].doctor_id,
                 user_name: orders[i].user_info[0].name,
                 doctor_name: orders[i].doctor_info[0].name,
-                department: orders[i].doctor_info[0].dept_info[0].name,
+                department: orders[i].doctor_info[0].dept_info[0],
                 time: orders[i].time,
                 status: orders[i].status
             });
@@ -197,8 +197,6 @@ router.get('/info', passport.authenticate('jwt', { session: false }), async func
         }
     } catch (err) {
         next(err)
-        tatus: 'fail',
-            e
     }
 });
 
