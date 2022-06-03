@@ -204,7 +204,12 @@ router.post('/comment', passport.authenticate('jwt', { session: false }), async 
         }
         if (req.user.id == ord.user_id) {
             order.updateOne({ _id: req.body.params.order_id }, {
-                $push: {
+                // $push: {
+                //     comments: [{
+                //         body: req.body.params.content,
+                //         date: Date.now()
+                //     }]
+                $set: {
                     comments: {
                         body: req.body.params.content,
                         date: Date.now()
@@ -227,6 +232,34 @@ router.post('/comment', passport.authenticate('jwt', { session: false }), async 
                 }
             })
         }
+    } catch (err) {
+        next(err)
+    }
+});
+
+
+router.get('/getcomment', async function(req, res, next) {
+    console.log('order comment request incomes.');
+    try {
+        const ord = await order.findById(req.query.order_id).exec()
+        if (ord == null) {
+            return res.json({
+                status: 'fail',
+                err: {
+                    errcode: 107,
+                    msg: '订单不存在'
+                }
+            })
+        }
+
+        res.json({
+            status: 'success',
+            data: {
+                comment: ord.comments.body,
+                date: ord.comments.date
+            }
+        })
+
     } catch (err) {
         next(err)
     }
