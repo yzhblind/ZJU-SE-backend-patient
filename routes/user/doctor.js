@@ -1,4 +1,5 @@
 var router = require('express').Router();
+const { SchemaTypes,mongoose} = require('mongoose');
 const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../../models');
 
 router.get('/query', async function(req, res, next){
@@ -30,30 +31,51 @@ router.get('/query', async function(req, res, next){
     })
 });
 
-router.post('/addcollect',async function(req, res, next){
+router.post('/addcollect',passport.authenticate('jwt', { session: false }), async function(req, res, next){
     console.log('doctor addcollect request incomes.')
 
     try{
-        const p=await patient.findByIdAndUpdate(
-            req.body.params.user_id,
-            {"$addToSet":{"collect":{doctor_id:req.body.params.doctor_id}}},
-            {"upsert":true}
-        ).exec()
-
-        if(p==null){
-            return res.json({
-                status: 'fail',
+        if (req.user.id == req.body.params.user_id) {
+            let doctorOid=mongoose.Types.ObjectId(req.body.params.doctor_id)
+            let doc=await doctor.findById(doctorOid).exec()
+            if(doc==null){
+                return res.json({
+                    status: 'fail',
+                    data: {
+                        msg: 'doctor not exist'
+                    }
+                })
+            }
+            const p=await patient.findByIdAndUpdate(
+                req.body.params.user_id,
+                {"$addToSet":{"collect":{_id:doctorOid}}},
+                {"upsert":true}
+            ).exec()
+    
+            if(p==null){
+                return res.json({
+                    status: 'fail',
+                    data: {
+                        msg: 'uid not exist'
+                    }
+                })
+            }
+            res.json({
+                status: 'success',
                 data: {
-                    msg: 'uid not exist'
+                    msg: '加入收藏成功'
                 }
             })
         }
-        res.json({
-            status: 'success',
-            data: {
-                msg: '加入收藏成功'
-            }
-        })
+        else{
+            res.status(401).json({
+                status: 'fail',
+                err: {
+                    errcode: 106,
+                    msg: 'token与请求用户不匹配'
+                }
+            })
+        }
     }
     catch(error){
         next(error)
@@ -61,24 +83,48 @@ router.post('/addcollect',async function(req, res, next){
 
 });
 
-router.get('/collectlist', async function(req, res, next){
+router.get('/collectlist',passport.authenticate('jwt', { session: false }), async function(req, res, next){
     console.log('doctor collectlist request incomes.');
     try {
-        const user = await patient.findById(req.query.user_id).exec()
-        if(user==null){
+        if (req.user.id == req.query.user_id) {
+            const user = await patient.findById(req.query.user_id).exec()
+            ret=[]
+            for(let item of user.collect){
+                doctor_id=item._id
+                let doc=await doctor.findById(doctor_id).exec()
+                if(doc!=null){
+                    ret.push({
+                        doctor_name:doc.name,
+                        intro:doc.intro
+                    })
+                }
+                else{
+                    console.log('invalid doctor id:'+doctor_id)
+                    console.log(item)
+                }
+            }
+            if(user==null){
+                return res.json({
+                    status: 'fail',
+                    data:{
+                        msg:'患者不存在'
+                    }    
+                })
+            }
             return res.json({
+                status: 'success',
+                data:ret   
+            })
+        } else {
+            res.status(401).json({
                 status: 'fail',
-                data:{
-                    msg:'患者不存在'
-                }    
+                err: {
+                    errcode: 106,
+                    msg: 'token与请求用户不匹配'
+                }
             })
         }
-        return res.json({
-            status: 'success',
-            data:{
-                collects:user.collect
-            }    
-        })
+        
     } catch(err) {
         next(err)
     }
