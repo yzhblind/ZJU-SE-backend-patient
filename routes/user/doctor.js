@@ -35,8 +35,8 @@ router.post('/addcollect',async function(req, res, next){
 
     try{
         const p=await patient.findByIdAndUpdate(
-            req.body.user_id,
-            {"$addToSet":{"collect":{doctor_id:req.body.doctor_id}}},
+            req.body.params.user_id,
+            {"$addToSet":{"collect":{doctor_id:req.body.params.doctor_id}}},
             {"upsert":true}
         ).exec()
 

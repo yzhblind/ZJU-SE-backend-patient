@@ -1,6 +1,11 @@
 const router = require('express').Router();
+const { query } = require('express');
 const passport = require('passport')
 const { announce, department, diagnosis, doctor, order, patient, schedule } = require('../../models');
+
+const {validQuery } = require('../../tools/order');
+const { default: mongoose } = require('mongoose');
+
 
 router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     console.log('get information request incomes.');
@@ -34,14 +39,30 @@ router.post('/setinfo', passport.authenticate('jwt', { session: false }), async 
     console.log('set information request incomes.');
     try {
         if (req.user.id == req.body.params.user_id) {
-            const gender = req.body.params.gender
-            const age= req.body.params.age
+            let body={}
 
-            patient.updateOne({ _id: req.body.user_id }, {
-                $set: {
-                    "gender":gender,
-                    "age":age
-                }
+
+            body['gender'] = req.body.params.gender
+            body['age'] = req.body.params.age
+
+            if (validQuery(req.body.params.hereditary)) {
+                body['hereditary'] = req.body.params.hereditary
+            }
+
+            if (validQuery(req.body.params.pastill)) {
+                body['pastill'] = req.body.params.pastill
+            }
+
+            if (validQuery(req.body.params.height)) {
+                body['height'] = req.body.params.height
+            }
+
+            if (validQuery(req.body.params.weight)) {
+                body['weight'] = req.body.params.weight
+            }
+
+            patient.updateOne({ _id: req.body.params.user_id }, {
+                $set: body
             }).then(() => {
                 res.json({
                     status: 'success',
@@ -67,7 +88,7 @@ router.post('/setinfo', passport.authenticate('jwt', { session: false }), async 
 router.post('/setavatar', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     console.log('set information request incomes.');
     try {
-        if (req.user.id == req.body.user_id) {
+        if (req.user.id == req.body.params.user_id) {
             const pic_id = req.body.params.pic_id
             patient.updateOne({ _id: req.body.params.user_id }, {
                 $set: {
