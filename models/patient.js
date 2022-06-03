@@ -1,3 +1,4 @@
+const { Schema } = require('mongoose');
 const mongoose = require('./db');
 
 const patientSchema = mongoose.Schema({
@@ -38,7 +39,7 @@ const patientSchema = mongoose.Schema({
     weight:{
         type:String
     },
-    collect: [{doctor_id:String}],
+    collect:[],
     pic_id:{
         type:String
     }
