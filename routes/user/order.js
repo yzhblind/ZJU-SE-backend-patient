@@ -57,6 +57,14 @@ router.get('/query', async function(req, res, next) {
                 from: 'doctors',
                 localField: 'doctor_id',
                 foreignField: '_id',
+                pipeline: [{
+                    $lookup: {
+                        from: 'departments',
+                        localField: 'dept_id',
+                        foreignField: '_id',
+                        as: 'dept_info'
+                    }
+                }],
                 as: 'doctor_info'
             }
         }, {
@@ -76,6 +84,7 @@ router.get('/query', async function(req, res, next) {
         //     time: -1
         // }).exec();
 
+
         let ret = [];
         for (let i = 0; i < orders.length; i++) {
             ret.push({
@@ -84,6 +93,7 @@ router.get('/query', async function(req, res, next) {
                 doctor_id: orders[i].doctor_id,
                 user_name: orders[i].user_info[0].name,
                 doctor_name: orders[i].doctor_info[0].name,
+                department: orders[i].doctor_info[0].dept_info[0].name,
                 time: orders[i].time,
                 status: orders[i].status
             });
@@ -114,7 +124,7 @@ router.post('/delete', passport.authenticate('jwt', { session: false }), async f
             })
         }
         if (req.user.id == ord.user_id) {
-            if (ord.status==="WAIT_BUYER_PAY" || ord.status.status=="TRADE_CLOSED") {
+            if (ord.status === "WAIT_BUYER_PAY" || ord.status.status == "TRADE_CLOSED") {
                 await order.findByIdAndDelete(req.body.params.order_id).exec()
                 res.json({
                     status: 'success',
@@ -195,8 +205,7 @@ router.post('/comment', passport.authenticate('jwt', { session: false }), async 
         const ord = await order.findById(req.body.params.order_id).exec()
         if (ord == null) {
             return res.json({
-                status: 'fail',
-                err: {
+                srr: {
                     errcode: 107,
                     msg: '订单不存在'
                 }
