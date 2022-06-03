@@ -5,7 +5,7 @@ const { announce, department, diagnosis, doctor, order, patient, schedule } = re
 
 const {validQuery } = require('../../tools/order');
 const { default: mongoose } = require('mongoose');
-
+const {getPicUrlByPid }=require('../../tools/info')
 
 router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     console.log('get information request incomes.');
@@ -90,6 +90,17 @@ router.post('/setavatar', passport.authenticate('jwt', { session: false }), asyn
     try {
         if (req.user.id == req.body.params.user_id) {
             const pic_id = req.body.params.pic_id
+
+            if(parseInt(pic_id)<0 || parseInt(pic_id)>=5){
+                res.status(401).json({
+                    status: 'fail',
+                    err: {
+                        errcode: 105,
+                        msg: '传入的pic_id范围为0~4'
+                    }
+                })
+            }
+
             patient.updateOne({ _id: req.body.params.user_id }, {
                 $set: {
                     "pic_id":pic_id
@@ -121,11 +132,12 @@ router.get('/getavatar', passport.authenticate('jwt', { session: false }), async
     console.log('get avatar request incomes.');
     try {
         if (req.user.id == req.query.user_id) {
-            const user = await patient.findById(req.user.id).exec()
+            const user = await patient.findById(req.query.user_id).exec()
+            
             res.json({
                 status: 'success',
                 data:{
-                    url:'/pic/pic'+user.pic_id+'.jpg'
+                    url:getPicUrlByPid(user.pic_id)
                 }    
             })
         } else {
@@ -141,5 +153,6 @@ router.get('/getavatar', passport.authenticate('jwt', { session: false }), async
         next(err)
     }
 });
+
 
 module.exports = router;
