@@ -89,6 +89,126 @@ router.post('/setinfo', passport.authenticate('jwt', { session: false }), async 
     }
 });
 
+router.post('/setphone', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
+    console.log('set information request incomes.');
+    try {
+        let phone=req.body.params.phone
+        let uid=req.body.params.user_id
+        if (req.user.id == uid) {
+            if(!validQuery(phone)){
+                return res.json({
+                    status: 'fail',
+                    data: {
+                        msg: 'no phone'
+                    }
+                })
+            }
+            let body={"phone":phone}
+            let user=await patient.findOne(body)
+
+            if(user!=null){
+                if(user._id==uid){
+                    return res.json({
+                        status: 'success',
+                        data: {
+                            msg: '设置成功'
+                        }
+                    })
+                }
+                else{
+                    return res.json({
+                        status: 'fail',
+                        data: {
+                            msg: 'this phone has been occupied by other users'
+                        }
+                    })
+                }
+            }
+
+            patient.updateOne({ _id: uid }, {
+                $set: body
+            }).then(() => {
+                res.json({
+                    status: 'success',
+                    data: {
+                        msg: '设置成功'
+                    }
+                })
+            }).catch(next)
+        } else {
+            res.status(401).json({
+                status: 'fail',
+                err: {
+                    errcode: 106,
+                    msg: 'token与请求用户不匹配'
+                }
+            })
+        }
+    } catch(err) {
+        next(err)
+    }
+});
+
+router.post('/setemail', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
+    console.log('set information request incomes.');
+    try {
+        let email=req.body.params.email
+        let uid=req.body.params.user_id
+        if (req.user.id == uid) {
+            if(!validQuery(email)){
+                return res.json({
+                    status: 'fail',
+                    data: {
+                        msg: 'no email'
+                    }
+                })
+            }
+            let body={"email":email}
+            let user=await patient.findOne(body)
+            
+            if(user!=null){
+                if(user._id==uid){
+                    return res.json({
+                        status: 'success',
+                        data: {
+                            msg: '设置成功'
+                        }
+                    })
+                }
+                else{
+                    return res.json({
+                        status: 'fail',
+                        data: {
+                            msg: 'this email has been occupied by other users'
+                        }
+                    })
+                }
+            }
+
+            patient.updateOne({ _id: uid }, {
+                $set: body
+            }).then(() => {
+                res.json({
+                    status: 'success',
+                    data: {
+                        msg: '设置成功'
+                    }
+                })
+            }).catch(next)
+        } else {
+            res.status(401).json({
+                status: 'fail',
+                err: {
+                    errcode: 106,
+                    msg: 'token与请求用户不匹配'
+                }
+            })
+        }
+    } catch(err) {
+        next(err)
+    }
+});
+
 router.post('/setavatar', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     console.log('set information request incomes.');
     try {

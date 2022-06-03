@@ -1,6 +1,7 @@
 var router = require('express').Router();
 const { SchemaTypes,mongoose} = require('mongoose');
 const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../../models');
+const passport = require('passport')
 
 router.get('/query', async function(req, res, next){
     console.log('doctor query request incomes.');
