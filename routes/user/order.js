@@ -93,7 +93,7 @@ router.get('/query', async function(req, res, next) {
                 doctor_id: orders[i].doctor_id,
                 user_name: orders[i].user_info[0].name,
                 doctor_name: orders[i].doctor_info[0].name,
-                department: orders[i].doctor_info[0].dept_info[0].name,
+                department: orders[i].doctor_info[0].dept_info[0],
                 time: orders[i].time,
                 status: orders[i].status
             });
