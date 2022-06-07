@@ -1,3 +1,4 @@
+const { Schema } = require('mongoose');
 const mongoose = require('./db');
 
 const patientSchema = mongoose.Schema({
@@ -8,8 +9,7 @@ const patientSchema = mongoose.Schema({
         unique: true
     },
     email: {
-        type: String,
-        unique: true
+        type: String
     },
     phone: {
         type: String,
@@ -19,6 +19,28 @@ const patientSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    gender:{
+        type:String,
+    },
+    age:{
+        type:String
+    },
+    hereditary:{
+        type:String
+    },
+    pastill:{
+        type:String
+    },
+    height:{
+        type:String
+    },
+    weight:{
+        type:String
+    },
+    collect:[],
+    pic_id:{
+        type:String
     }
 });
 

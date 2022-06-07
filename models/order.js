@@ -18,7 +18,7 @@ const orderSchema = mongoose.Schema({
         required: true,
         enum: ['TRADE_SUCCESS', 'TRADE_FINISHED', 'WAIT_BUYER_PAY', 'TRADE_CLOSED']
     },
-    comments: [{ body: String, date: Date }]
+    comments: { body: String, date: Date }
 });
 
 module.exports = mongoose.model('order', orderSchema);

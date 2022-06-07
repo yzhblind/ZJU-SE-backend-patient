@@ -37,15 +37,15 @@ router.post('/', async function (req, res, next) {
                 }
             })
         }
-        if(await check.email(email)!=null) {
-            return res.json({
-                status: 'fail',
-                err:{
-                    errcode:102,
-                    msg:'邮箱不唯一'
-                }
-            })
-        }
+        // if(await check.email(email)!=null) {
+        //     return res.json({
+        //         status: 'fail',
+        //         err:{
+        //             errcode:102,
+        //             msg:'邮箱不唯一'
+        //         }
+        //     })
+        // }
         const p = new patient({
             name: name,
             phone: phone,
