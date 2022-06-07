@@ -20,7 +20,7 @@ router.post('/pwd', function(req, res, next){
     console.log('login passward request incomes.');
     patient.findOne({name:req.body.params.username}).then((user)=>{
         if(!user) {
-            return res.status(401).json({
+            return res.status(200).json({
                 status: 'fail',
                 err: {
                     errcode:104,
@@ -42,7 +42,7 @@ router.post('/pwd', function(req, res, next){
                 }
             })
         } else {
-            res.status(401).json({
+            res.status(200).json({
                 status: 'fail',
                 err: {
                     errcode:105,
@@ -57,7 +57,7 @@ router.post('/idcode', function(req, res, next){
     console.log('login identifying code request incomes.');
     patient.findOne({phone:req.body.params.phone}).then((user)=>{
         if(!user) {
-            return res.status(401).json({
+            return res.status(200).json({
                 status: 'fail',
                 err: {
                     errcode:104,
@@ -79,7 +79,7 @@ router.post('/idcode', function(req, res, next){
                 }
             })
         } else {
-            res.status(401).json({
+            res.status(200).json({
                 status: 'fail',
                 err: {
                     errcode:105,
