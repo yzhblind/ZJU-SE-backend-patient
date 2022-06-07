@@ -19,6 +19,7 @@ router.get('/', passport.authenticate('jwt', { session: false }), async function
                     phone: user.phone,
                     email: user.email,
                     gender: user.gender,
+                    age: user.age,
                     hereditary : user.hereditary,
                     pastill : user.pastill,
                     height : user.height,
