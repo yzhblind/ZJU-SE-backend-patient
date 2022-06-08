@@ -1,6 +1,8 @@
 const { Schema } = require('mongoose');
 const mongoose = require('./db');
 
+// YAY: I think there is a duplicated "gender" here
+
 const patientSchema = mongoose.Schema({
     gender: String,
     name: {
