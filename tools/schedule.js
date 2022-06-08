@@ -1,4 +1,4 @@
-const {announce, department, diagnosis, doctor, order, patient, schedule} = require('../models');
+const { announce, department, diagnosis, doctor, order, patient, schedule } = require('../models');
 
 function cvtDate(date_idx) {
     return ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][date_idx];
@@ -22,6 +22,15 @@ function cvtTimeToIdx(time_name) {
     return table[time_name];
 }
 
+function cvtIdxToEnTime(time_idx) {
+    table = {
+        0: 'morning',
+        1: 'afternoon',
+        2: 'evening'
+    }
+    return table[time_idx];
+}
+
 function cvtIdxToChiTime(time_idx) {
     table = {
         0: '上午',
@@ -34,12 +43,12 @@ function cvtIdxToChiTime(time_idx) {
 async function cvtScheduleToHumanInfo(schedule_data) {
     ret = [];
     tree = {};
-    for(let i = 0; i < schedule_data.length; i++) {
+    for (let i = 0; i < schedule_data.length; i++) {
         sch = schedule_data[i];
-        doctor_inst = await doctor.find({_id: sch.doctor_id}).exec();
+        doctor_inst = await doctor.find({ _id: sch.doctor_id }).exec();
         doctor_name = doctor_inst[0].name;
         depart_id = doctor_inst[0].dept_id;
-        department_inst = await department.find({_id: depart_id}).exec();
+        department_inst = await department.find({ _id: depart_id }).exec();
         department_name = department_inst[0].name;
         ret.push({
             departmentId: depart_id,
@@ -49,7 +58,7 @@ async function cvtScheduleToHumanInfo(schedule_data) {
             major: '占位',
             info: doctor_inst[0].intro
         })
-        if(tree[department_name] === undefined) {
+        if (tree[department_name] === undefined) {
             tree[department_name] = {
                 title: department_name,
                 value: depart_id,
@@ -66,7 +75,7 @@ async function cvtScheduleToHumanInfo(schedule_data) {
         }
     }
     ret_tree = []
-    for(let depart in tree) {
+    for (let depart in tree) {
         ret_tree.push({
             title: depart,
             value: tree[depart].value,
@@ -76,5 +85,11 @@ async function cvtScheduleToHumanInfo(schedule_data) {
     return [ret, ret_tree];
 }
 
-module.exports = {cvtDate, cvtTime, cvtScheduleToHumanInfo, cvtTimeToIdx, cvtIdxToChiTime
+module.exports = {
+    cvtDate,
+    cvtTime,
+    cvtScheduleToHumanInfo,
+    cvtTimeToIdx,
+    cvtIdxToChiTime,
+    cvtIdxToEnTime
 };

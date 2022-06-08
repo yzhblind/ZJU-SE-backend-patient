@@ -4,7 +4,7 @@ const { announce, department, diagnosis, doctor, order, patient, schedule } = re
 const {
     orderInsertCheck
 } = require('../../tools/registeration')
-const { cvtScheduleToHumanInfo, cvtTimeToIdx } = require('../../tools/schedule')
+const { cvtScheduleToHumanInfo, cvtTimeToIdx, cvtIdxToEnTime } = require('../../tools/schedule')
 
 
 router.get('/info', async function(req, res, next) {
@@ -86,6 +86,17 @@ router.get('/pay', async function(req, res, next) {
             let orderTime = ord.time.getTime();
             let timeInterval = 1000 * 60 * 15; // 15 min
             if (curTime - orderTime < timeInterval) {
+                let schedule_time = cvtIdxToEnTime(req.query.quota);
+                let schedule_date = ord.time.getDay();
+
+                await schedule.updateOne({
+                    time: schedule_time,
+                    date: schedule_date,
+                    doctor_id: req.query.doctor_id
+                }, {
+                    $inc: { quota: -1 }
+                })
+
                 order.updateOne({ _id: mongoose.Types.ObjectId(req.query.order_id) }, {
                     status: 'TRADE_SUCCESS'
                 }).then(() => {
