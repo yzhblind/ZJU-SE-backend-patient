@@ -18,12 +18,24 @@ router.get('/info', async function(req, res, next) {
                 msg: '缺少参数: date'
             }
         });
+        return;
     }
     let date_obj = new Date(date);
     console.log(date_obj)
     let date_key = date_obj.getDay();
+    if (isNaN(date_key)) {
+        res.status(200).json({
+            status: "fail",
+            err: {
+                errcode: 106,
+                msg: '日期格式错误'
+            }
+        });
+        return;
+    }
     console.log(date_key);
     schs = await schedule.find({ date: date_key }).lean().exec();
+    console.log(schs);
     let [schs_human, schs_tree] = await cvtScheduleToHumanInfo(schs)
     console.log(schs_human);
     console.log(schs_tree)
