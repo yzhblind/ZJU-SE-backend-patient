@@ -65,9 +65,9 @@ router.get('/list', async function(req, res, next) {
     let ret = {}
     for (let i = 0; i < dept.length; i++) {
         info = await getDoctorsFromDept(dept[i]._id);
-        if(Object.keys(info).length == 0) {
-            continue;
-        }
+        // if(Object.keys(info).length == 0) {
+        //     continue;
+        // }
         ret[dept[i].name] = info;
         // ret[dept[i].name] = await getDoctorsFromDept(dept[i]._id);
     }
