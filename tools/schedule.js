@@ -56,7 +56,8 @@ async function cvtScheduleToHumanInfo(schedule_data) {
             name: doctor_name,
             department: department_name,
             major: '占位',
-            info: doctor_inst[0].intro
+            info: doctor_inst[0].intro,
+            photo: doctor_inst[0].photo
         })
         if (tree[department_name] === undefined) {
             tree[department_name] = {
