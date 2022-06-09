@@ -22,6 +22,7 @@ router.get('/query', async function(req, res, next) {
                 department: dept_doctor,
                 age: doctors[i].age,
                 intro: doctors[i].intro,
+                photo: doctors[i].photo
             });
         }
     }
